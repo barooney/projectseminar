@@ -1,0 +1,32 @@
+---
+papersize: a4
+documentclass: article
+title: Analyzing the Yelp dataset
+author: Michael Backs and Daniel Baron
+date: \today
+abstract: |
+	Some abstract
+bibliography: references.bib
+classoption:
+- twocolumn
+...
+
+# Topic
+
+Some topic
+
+# Questions
+
+Some questions
+
+# Data
+
+Some data
+
+# Summary
+
+Some summary
+
+# References
+
+\footnotesize
