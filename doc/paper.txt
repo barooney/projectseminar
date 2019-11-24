@@ -11,15 +11,23 @@ classoption:
 - twocolumn
 ...
 
-# Topic
+# Introduction
 
-Some topic
+The problem of text classification has been around since the dawn of humanity. Sentiment analysis is virtually omnipresent nowadays, which is why we will instead focus on what causes a text to be amusing for readers. 
+What have other people done? Who care's huh 
+This paper is concerned with predicting whether a customer review can be considered ‘funny’. 
+The dataset used in the following sections is taken from kaggle and comprises roughly 5,2 million user reviews, for instance on restaurants, released on Yelp. (footnote wie geht das) We limit our analysis to English speakung reviews from USA.
+Yay whats our method? We will extract features from the user reviews which haven't been set yet. Naive Bayes is tedious, so we'll find something else.
+The paper is structured as follows: In section 2 open questions are discussed, section 3 describes the dataset, section 4 provides an preliminary analysis of the data and the last section summarizes findings.
 
 # Questions
 
 Some questions
 
 # Data
+
+The semi structured dataset consists of six json-files (should I mention the format?): The first file has all reviewed businesses and the number of times each business was reviewed in it, while the second one contains a record of all dates when users actually were at a place. The third file is the core of our project, which comprises user reviews
+# Initial Analysis
 
 Some data
 
