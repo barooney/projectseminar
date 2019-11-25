@@ -13,12 +13,12 @@ classoption:
 
 # Introduction
 
-The problem of text classification has been around since the dawn of humanity. Sentiment analysis is virtually omnipresent nowadays, which is why we will instead focus on what causes a text to be amusing for readers.
+The problem of text classification has been around since the dawn of the digital age. Sentiment analysis is virtually omnipresent nowadays, which is why we will take a different approach instead. Our pricipal focus will be on classifying a text with regard to amusement aroused in the reader. The factors responsible for evoking such a feeling need to be investigated.
 
 @iacobdeniz used the same dataset to inspect a similar aspect in their Kaggle Notebook. They are splitting the reviews into positive and negative ones and train a decision tree to figure out if a review is rather positive or negative. By leaving out 3-star-reviews, they don't use any neutral reviews: "It would make sense to associate 4- and 5-star reviews with a positive sentiment and 1- and 2-star reviews with a negative sentiment. 3-star reviews would be neutral, but for simplicity purposes, we will only attempt to predict the positive and negative sentiment, and we will revisit neutral later." @iacobdeniz
 
 This paper is concerned with predicting whether a customer review can be considered ‘funny’. 
-The dataset used in the following sections is taken from Kaggle and comprises roughly 5,2 million user reviews, for instance on restaurants, released on Yelp @kaggle.
+The dataset used in the following sections is taken from Kaggle and comprises roughly 5,2 million user reviews released on Yelp @kaggle.
 
 # Dataset
 
@@ -30,7 +30,7 @@ The dataset is already pre-classified by the Yelp user database, so individuals 
 
 The reduced dataset was created by preprocessing the businesses file consisting of 192.609 businesses and feeding latitude and longitude coordinates into the reverse geocoder python library written by @reversegeocoder to get a more accurate state relation since we found the adresses and states not to match up in every case.
 
-As @iacobdeniz already pointed out in their notebook, the idea of building a CART model (Classification and Regression Trees) seems convincing and would probably be a good idea to follow up with. After removing stop words, the funny reviews should have some words in common that we then could search in the other reviews and see if they are funny as well.
+As @iacobdeniz already pointed out in their notebook, the idea of building a CART model (Classification and Regression Trees) seems convincing and would probably be a good idea to follow up with. After removing stop words, the funny reviews should have some words in common that we then could search in the other reviews and see if they are funny as well. Rhyming words at close distance or colloquial expressions could hint at an amusing review. Moreover, the use of imperative sentences as a means of directly adressing the reader could further contribute to creating entertainment. Additionally, neologisms which are not typing errors might be of interest.
 
 # References
 
