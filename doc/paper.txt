@@ -5,7 +5,7 @@ title: Analyzing the Yelp dataset
 author: Michael Backs and Daniel Baron
 date: \today
 abstract: |
-	Some abstract
+	Yelp is a web platform to collect and present user ratings and suggestions for restaurants and other locations such as bars, clubs and various other places. Yelp releases a dump of their dataset once a year to allow students to analyze it. This paper is about analyzing the Yelp dataset to find funny reviews and identify phrases that might lead to such a categorization.
 bibliography: references.bib
 classoption:
 - twocolumn
@@ -13,27 +13,24 @@ classoption:
 
 # Introduction
 
-The problem of text classification has been around since the dawn of humanity. Sentiment analysis is virtually omnipresent nowadays, which is why we will instead focus on what causes a text to be amusing for readers. 
-What have other people done? Who care's huh 
+The problem of text classification has been around since the dawn of humanity. Sentiment analysis is virtually omnipresent nowadays, which is why we will instead focus on what causes a text to be amusing for readers.
+
+@iacobdeniz used the same dataset to inspect a similar aspect in their Kaggle Notebook. They are splitting the reviews into positive and negative ones and train a decision tree to figure out if a review is rather positive or negative. By leaving out 3-star-reviews, they don't use any neutral reviews: "It would make sense to associate 4- and 5-star reviews with a positive sentiment and 1- and 2-star reviews with a negative sentiment. 3-star reviews would be neutral, but for simplicity purposes, we will only attempt to predict the positive and negative sentiment, and we will revisit neutral later." @iacobdeniz
+
 This paper is concerned with predicting whether a customer review can be considered ‘funny’. 
-The dataset used in the following sections is taken from kaggle and comprises roughly 5,2 million user reviews, for instance on restaurants, released on Yelp. (footnote wie geht das) We limit our analysis to English speakung reviews from USA.
-Yay whats our method? We will extract features from the user reviews which haven't been set yet. Naive Bayes is tedious, so we'll find something else.
-The paper is structured as follows: In section 2 open questions are discussed, section 3 describes the dataset, section 4 provides an preliminary analysis of the data and the last section summarizes findings.
+The dataset used in the following sections is taken from Kaggle and comprises roughly 5,2 million user reviews, for instance on restaurants, released on Yelp @kaggle.
 
-# Questions
+# Dataset
 
-Some questions
+The semi structured dataset consists of five JSON files: The first file ("yelp_academic_dataset_business.json") has all reviewed businesses and the number of times each business was reviewed in it, while the second one ("yelp_academic_dataset_checkin.json") contains a record of all dates when users actually were at a place. The third file ("yelp_academic_dataset_review.json") contains the actual reviews we are going to use for our research. The fourth file ("yelp_academic_dataset_tip.json") keeps a list of tips given by users without being a review. The last file ("yelp_academic_dataset_user.json") keeps the information about the users who left reviews.
 
-# Data
+We limit our analysis to reviews given for all Illinois-based locations present in the Yelp Dataset, which results in 42.316 reviews for 1.930 businesses.
 
-The semi structured dataset consists of six json-files (should I mention the format?): The first file has all reviewed businesses and the number of times each business was reviewed in it, while the second one contains a record of all dates when users actually were at a place. The third file is the core of our project, which comprises user reviews
-# Initial Analysis
+The dataset is already pre-classified by the Yelp user database, so individuals had the chance to vote for a review to be funny. 7.763 out of the extracted 42.316 reviews were rated funny at least once, which leaves 34.553 reviews up for classification.
 
-Some data
+The reduced dataset was created by preprocessing the businesses file consisting of 192.609 businesses and feeding latitude and longitude coordinates into the reverse geocoder python library written by @reversegeocoder to get a more accurate state relation since we found the adresses and states not to match up in every case.
 
-# Summary
-
-Some summary
+As @iacobdeniz already pointed out in their notebook, the idea of building a CART model (Classification and Regression Trees) seems convincing and would probably be a good idea to follow up with. After removing stop words, the funny reviews should have some words in common that we then could search in the other reviews and see if they are funny as well.
 
 # References
 
