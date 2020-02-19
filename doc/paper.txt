@@ -24,7 +24,7 @@ Text classification is applied in a number of fields and situations. @jurafski_m
 The semi structured dataset taken from Kaggle consists of five JSON files including reviewed businesses, a record of dates and locations when reviewers were at a business, the actual user reviews, a list of tips given by users and information on users who wrote reviews. 
 Since our focus lies on text classification we only use the file containing users' reviews totalling roughly 5.2 million reviews. The other files help us reduce the amount of reviews to a managable size because they contain additional information such as in which state a review was made. This allowed grouping reviews by states of the USA. Furthermore, each review is rated how 'funny', 'cool' and 'helpful' it is by the Yelp user base. For instance, a given review might be rated 'funny' three times, 'cool' zero times and 'helpful' five times. But it could also have zero ratings for all three categories. 
 
-This raises the problem of how much of our data has the correct label which is needed for supervised learning. Our first suggestion is that reviews that were not rated at all are not labeled. Thus, reviews must at least have one voting in at least on of the three categories to be accepted as labeled data. An alternative would be considering all of our data as labeled, risking that reviews that have not been read at all are given a false label.
+This raises the problem of how much of our data has the correct label which is needed for supervised learning. Our first suggestion is that reviews that were not rated at all are not labeled. Thus, reviews must at least have one vote in at least one of the three categories to be accepted as labeled data. An alternative would be considering all of our data as labeled, risking that reviews that have not been read at all are given a false label.
 
 Putting such issues aside for the moment, we limit our first analysis to reviews given for all Illinois-based locations present in the Yelp Dataset, which results in 42,316 reviews for 1,930 businesses. To improve classification training results, further data can be taken into account by other states.
 
@@ -55,8 +55,23 @@ In order to improve the result that is given by the baseline classifyer model, w
 
 ## Preliminary matters
 
+As mentioned in the introduction, it is questionable how much of our data bears the correct label. This is way we suggest a condition that sorts out reviews that are likely to not have been read and therefore do not have correct labels, i.e. votes reflecting the users' impression of how amusing a review is. If a review is rated at least funny one time it can be used for training the classifier model. If a review is not rated funny, it must at least be rated as cool or useful to be accepted as training data. Training the classifier will be done with and without this condition.
 
 ![](projectseminar.png)
+diagram 1
+
+## Categories
+
+We will utilize multiple mutually exclusive classification alongside supervised learning. The classes in our data are basically the number of funny votes. We propose reducing this high number to six classes each reflecting different funniess categories.
+
+
+## Baseline
+
+Now we use Naive Bayes as our baseline classifier, which is a probabilistic classifier based on Bayes' rule that makes two simplifying assumptions. Firstly, the position and distribution of words do not matter, which is known as bag-of-words method [@jurafski_martin_3rd, chapter 4 page 4]. Secondly, the probabilities for each feature of a given text are independent and thus simply multiplied (ibid.). A feature of given text is a word.
+
+We represent each text as a sparse text vector. It is counted how many times each word type of the overall vocabulary occurs in a given text. Word types that do not occur in a given text are represented by zeros. Here, a given text is a set of features f_1, f_2, ... ,f_n element of F. The classifier then predicts a class c for a review by calculating the probability for each class and choosing the one with the highest probability.  
+
+$$c_{NB} = \underset{c\in C}{\operatorname{argmax} } P(c) \prod_{f\in F} P(f|c)$$
 
 
 
