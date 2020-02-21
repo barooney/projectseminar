@@ -57,8 +57,7 @@ In order to improve the result that is given by the baseline classifyer model, w
 
 As mentioned in the introduction, it is questionable how much of our data bears the correct label. This is way we suggest a condition that sorts out reviews that are likely to not have been read and therefore do not have correct labels, i.e. votes reflecting the users' impression of how amusing a review is. If a review is rated at least funny one time it can be used for training the classifier model. If a review is not rated funny, it must at least be rated as cool or useful to be accepted as training data. Training the classifier will be done with and without this condition.
 
-![](projectseminar.png)
-diagram 1
+![diagram 1](projectseminar.png){width=100%}
 
 ## Categories
 
@@ -69,7 +68,7 @@ We will utilize multiple mutually exclusive classification alongside supervised 
 
 Now we use Naive Bayes as our baseline classifier, which is a probabilistic classifier based on Bayes' rule that makes two simplifying assumptions. Firstly, the position and distribution of words do not matter, which is known as bag-of-words method [@jurafski_martin_3rd, chapter 4 page 4]. Secondly, the probabilities for each feature of a given text are independent and thus simply multiplied (ibid.). A feature of given text is a word.
 
-We represent each text as a sparse text vector. It is counted how many times each word type of the overall vocabulary occurs in a given text. Word types that do not occur in a given text are represented by zeros. Here, a given text is a set of features f_1, f_2, ... ,f_n element of F. The classifier then predicts a class c for a review by calculating the probability for each class and choosing the one with the highest probability.  
+We represent each text as a sparse text vector. It is counted how many times each word type of the overall vocabulary occurs in a given text. Word types that do not occur in a given text are represented by zeros. Here, a given text is a set of features $f_{1}$, $f_{2}$, ... ,$f_{n}$ element of F. The classifier then predicts a class c for a review by calculating the probability for each class and choosing the one with the highest probability.  
 
 $$c_{NB} = \underset{c\in C}{\operatorname{argmax} } P(c) \prod_{f\in F} P(f|c)$$
 

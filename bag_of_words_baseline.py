@@ -1,11 +1,11 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_predict
 from sklearn.naive_bayes import GaussianNB
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import classification_report
-
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 
 df = pd.read_json('./data/intermediate/Illinois_reviews.json', lines=True)
 labeled = df.query('funny>0 or cool>0 or useful>0')
@@ -37,7 +37,8 @@ def train_model_baseline(df):
     #  -------------------------------------
     #   0  | 1-2 | 3-5 | 6-10 | 11-40 | +40
     
-    df['funniness_category'] = pd.cut(df.funny, bins=[-1,0,2,5,10,40,100000], labels=[1,2,3,4,5,6])
+    # TODO: Good bin size?
+    df['funniness_category'] = pd.cut(df.funny, bins=[-1,0,2,5,10,20,30,40,100], labels=[1,2,3,4,5,6,7,8])
     
     
     df_shuffled = df.sample(frac=1)
@@ -96,6 +97,17 @@ def train_model_baseline(df):
     # report
     print("\nReport:")
     print(classification_report(labels_test, labels_pred))
+
+    # scaler = StandardScaler()
+    # X_train_scaled = scaler.fit_transform()
+
+    y_train_pred = cross_val_predict(gnb, features_train, labels_train, cv=3)
+    conf_mx = confusion_matrix(labels_train, y_train_pred)
+
+    print("Confusion Matrix")
+    print(conf_mx)
+    plt.matshow(conf_mx, cmap=plt.cm.gray)
+    plt.show()
     
     
 if __name__ == "__main__": 
