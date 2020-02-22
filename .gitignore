@@ -195,3 +195,4 @@ $RECYCLE.BIN/
 data/*
 
 doc/*.pdf
+doc/images/*.png

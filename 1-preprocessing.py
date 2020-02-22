@@ -64,12 +64,14 @@ business_list = list(businesses.values())
 coordinates = [(c.latitude, c.longitude) for c in business_list]
 res = reverse_geocoder.search(coordinates)
 ctr = 0
+possible_states = set()
 for r in res:
     state = r['admin1']
+    possible_states.add(state)
     if state == STATE_TO_FILTER:
         add_or_update(state, business_list[ctr])
     ctr += 1
-
+print(possible_states)
 for s in states:
     print(s + ": " + str(len(states[s])))
 
