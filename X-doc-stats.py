@@ -9,6 +9,7 @@ import os
 import json
 import argparse
 import os.path
+import math
 
 # third party modules
 import reverse_geocoder
@@ -21,6 +22,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures 
 from tqdm import tqdm
 from matplotlib import pyplot as plt
+from scipy.optimize import curve_fit
+from scipy import optimize
 
 # application specific modules
 from models import Business, Review
@@ -65,22 +68,39 @@ print(Y)
 
 #Y_pred = np.polynomial.polynomial.polyfit(X, Y, deg=2)
 
-Y_pred = np.polyfit(X, Y, deg=3)
 
-print(Y_pred)
-Y_pred_form = ((Y_pred[3]) * X**3) +((Y_pred[2]) * X**2) + ((Y_pred[1]) * X) + (Y_pred[0])
-plt.plot(X, Y_pred_form)
-###
+def func(x, a, b):
+    #return len(list(cnt.values())) / (a*((x-2)**2)+1)
+    return math.e**(a*(-x)+b)
+    #return x**(-a)
+
+popt, pcov = curve_fit(func, X, Y)
+
+params, params_covariance = optimize.curve_fit(func, X, Y)
+
+
+plt.plot(X, func(X, params[0], params[1]),
+         label='Fitted function')
+
+
+
+# Y_pred = np.polyfit(X, Y, deg=3)
+
+# print(Y_pred)
+# Y_pred_form = ((Y_pred[3]) * X**3) +((Y_pred[2]) * X**2) + ((Y_pred[1]) * X) + (Y_pred[0])
+# plt.plot(X, Y_pred_form)
+# ###
 
 plt.title('Distribution of funny votes in ' + STATE_TO_FILTER)
 plt.yscale("log")
-# plt.show()
-try:
-	os.mkdir('./doc')
-	os.mkdir('./doc/images')
-except FileExistsError:
-    pass
+plt.show()
 
-file = open('./doc/images/' + STATE_TO_FILTER + '.png', 'wb')
-plt.savefig(file)
-file.close()
+# try:
+# 	os.mkdir('./doc')
+# 	os.mkdir('./doc/images')
+# except FileExistsError:
+#     pass
+
+# file = open('./doc/images/' + STATE_TO_FILTER + '.png', 'wb')
+# plt.savefig(file)
+# file.close()
