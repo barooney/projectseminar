@@ -1,23 +1,29 @@
 # imports
+
+# stand library
 from collections import Counter
-import reverse_geocoder
-import itertools
-import json
-import nltk
 import os
 import sys
+import itertools
+import argparse
+
+# third party modules
+import reverse_geocoder
+import json
+import nltk
 from tqdm import tqdm
+
+# application specific
 from models import Business, Review
 
 # Choose the state to filter reviews for
-if len(sys.argv) >= 2:
-	STATE_TO_FILTER = sys.argv[1]
-else:
-	print("The script requires one parameter, the state:")
-	print("")
-	print("python3 ./1-preprocessing.py <state>")
-	print("for example, python3 ./1-preprocessing.py Illinois")
-	exit(0)
+parser = argparse.ArgumentParser(description="The script filters reviews for a given state. \
+                                 One parameter is required, the state: python3 ./2-doc-stats.py <state>. \
+                                     For example, python3 ./2-doc-stats.py Illinois")
+parser.add_argument("state_input", help="Enter the state to filter reviews for: for example, python3 ./2-doc-stats.py Illinois",
+                    type=str)
+args = parser.parse_args()
+STATE_TO_FILTER = args.state_input
 
 # DEFAULTS
 
