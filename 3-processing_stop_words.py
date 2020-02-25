@@ -100,7 +100,7 @@ type_token_ratio = len(WORDS_zipf)/len(all_words) # no stems, each unique orthog
 print("Type-token: ", type_token_ratio)
 
 # remove the 50 most frequent words except for good, food, place, cos they are relevant for the review
-words_without_stop_words = [word[0] for word in WORDS_zipf if word[2]>50 or word[1] > 1 if word not in ('good', 'food', 'place') ]
+words_without_stop_words = [word[0] for word in WORDS_zipf if word[2]>50 and word[1] > 1 if word not in ('good', 'food', 'place') ]
 print(words_without_stop_words[:100])
 
 with open('./data/intermediate/' + STATE_TO_FILTER + '_zipf.json', 'w') as zipf_file:
