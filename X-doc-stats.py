@@ -17,6 +17,7 @@ import nltk
 import numpy as np
 import numpy.polynomial.polynomial as poly
 import pandas as pd
+from scipy.interpolate import UnivariateSpline
 from scipy.stats import linregress
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures 
@@ -31,12 +32,13 @@ from models import Business, Review
 
 # Choose the state to filter reviews for
 parser = argparse.ArgumentParser(description="The script generates stats for a given state. Make sure the state file has been created before. \
-                                 One parameter is required, the state: python3 ./2-doc-stats.py <state>. \
-                                     For example, python3 ./2-doc-stats.py Illinois")
-parser.add_argument("state_input", help="Enter the state to generate stats for: for example, python3 ./2-doc-stats.py Illinois",
-                    type=str)
+    One parameter is required, the state: python3 ./2-doc-stats.py <state>. \
+    For example, python3 ./2-doc-stats.py Illinois")
+parser.add_argument("state_input", help="Which state to show", type=str)
+parser.add_argument("-s", help="Whether to show the graph or save it in the docs folder.", type=bool, default=True)
 args = parser.parse_args()
 STATE_TO_FILTER = args.state_input
+SHOW_GRAPH = args.s
 
 assert os.path.exists('./data/intermediate/' + STATE_TO_FILTER + '_reviews.json')
 
@@ -59,48 +61,31 @@ Y = np.array(list(cnt.values()))#.reshape(-1, 1)  # -1 means that calculate the 
 print(X)
 print(Y)
 
-#p = poly.Polynomial.fit(X,Y,25)
-#plt.plot(*p.linspace())
+for i, x in enumerate(X):
+    print(str(i) + "\t" + str(x) + "\t" + str(Y[i]))
 
-#mymodel = np.poly1d(np.polyfit(X, Y, 3))
+# Y_pred = np.polyfit(X, Y, 2)
+# p = np.poly1d(Y_pred)
+# xp = np.linspace(0, np.max(X), 1000)
+# plt.plot(xp, p(xp), 'g', lw=1)
 
-#plt.plot(mymodel.linespace())
-
-#Y_pred = np.polynomial.polynomial.polyfit(X, Y, deg=2)
-
-
-def func(x, a, b):
-    #return len(list(cnt.values())) / (a*((x-2)**2)+1)
-    return math.e**(a*(-x)+b)
-    #return x**(-a)
-
-popt, pcov = curve_fit(func, X, Y)
-
-params, params_covariance = optimize.curve_fit(func, X, Y)
-
-
-plt.plot(X, func(X, params[0], params[1]),
-         label='Fitted function')
-
-
-
-# Y_pred = np.polyfit(X, Y, deg=3)
-
-# print(Y_pred)
-# Y_pred_form = ((Y_pred[3]) * X**3) +((Y_pred[2]) * X**2) + ((Y_pred[1]) * X) + (Y_pred[0])
-# plt.plot(X, Y_pred_form)
+spl = UnivariateSpline(X, Y)
+xs = np.linspace(0, np.max(X), 1000)
+plt.plot(xs, spl(xs), 'r', lw=1)
 # ###
 
 plt.title('Distribution of funny votes in ' + STATE_TO_FILTER)
 plt.yscale("log")
-plt.show()
 
-# try:
-# 	os.mkdir('./doc')
-# 	os.mkdir('./doc/images')
-# except FileExistsError:
-#     pass
+if SHOW_GRAPH:
+    plt.show()
+else:
+    try:
+        os.mkdir('./doc')
+        os.mkdir('./doc/images')
+    except FileExistsError:
+        pass
 
-# file = open('./doc/images/' + STATE_TO_FILTER + '.png', 'wb')
-# plt.savefig(file)
-# file.close()
+    file = open('./doc/images/' + STATE_TO_FILTER + '.png', 'wb')
+    plt.savefig(file)
+    file.close()

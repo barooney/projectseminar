@@ -8,7 +8,6 @@ Created on Mon Nov 25 19:58:05 2019
 
 # imports
 from collections import Counter
-#import reverse_geocoder
 import itertools 
 import json
 import nltk
@@ -16,7 +15,19 @@ import os
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
+from models import Business, Review
+import argparse
 # DEFAULTS
+
+
+# Choose the state to filter reviews for
+parser = argparse.ArgumentParser(description="The script filters reviews for a given state. \
+                                 One parameter is required, the state: python3 ./3-processing_stop_words.py <state>. \
+                                     For example, python3 ./3-processing_stop_words.py Illinois")
+parser.add_argument("state_input", help="Enter the state to filter reviews for: for example, python3 ./3-processing_stop_words.py Illinois",
+                    type=str)
+args = parser.parse_args()
+STATE_TO_FILTER = args.state_input
 
 # define folder structure
 base_path = os.getcwd()
@@ -35,21 +46,8 @@ try:
 except FileExistsError:
     print("Folder already exists.")
     
-    
-# DATA MODELS
-
-# Business
-class Business:
-    def __init__(self, json):
-        self.__dict__ = json
 
 businesses = dict()
-
-# Review
-class Review:
-    def __init__(self, json):
-        self.__dict__ = json
-
 reviews = dict()
 
 
@@ -57,7 +55,7 @@ reviews = dict()
 #########################################################################
 # open reviews from Illinois
 
-with open(intermediate_data_path + '/Illinois_reviews.json', encoding="utf8") as reviews_file:
+with open(intermediate_data_path + '/' + STATE_TO_FILTER + '_reviews.json', encoding="utf8") as reviews_file:
     for l in tqdm(reviews_file.readlines()):
         r = Review(json.loads(l))
         reviews[r.review_id] = r
@@ -96,12 +94,27 @@ plt.xlabel('Ranks')
 plt.ylabel('Frequencies')
 plt.grid()
 #plt.xticks(indexes + 0.5, plotting_counting.keys(), rotation='vertical')
-plt.show()
+# plt.show()
 
 type_token_ratio = len(WORDS_zipf)/len(all_words) # no stems, each unique orthographic word is a type
 print("Type-token: ", type_token_ratio)
 
 # remove the 50 most frequent words except for good, food, place, cos they are relevant for the review
-words_without_stop_words = [word[0] for word in WORDS_zipf if word[2]>50 if word not in ('good', 'food', 'place') ]
+words_without_stop_words = [word[0] for word in WORDS_zipf if word[2]>50 or word[1] > 1 if word not in ('good', 'food', 'place') ]
 print(words_without_stop_words[:100])
 
+with open('./data/intermediate/' + STATE_TO_FILTER + '_zipf.json', 'w') as zipf_file:
+    before = 0
+    after = 0
+    for r in tqdm(reviews):
+        review_words = set(reviews[r].text.split())
+        before += len(review_words)
+        #print(r + " len before: " + str(len(review_words)))
+        intersect = list(set(review_words).intersection(words_without_stop_words))
+        after += len(intersect)
+        #print(r + " len after: " + str(len(intersect)))
+        reviews[r].text = " ".join(intersect)
+        json.dump(reviews[r].__dict__, zipf_file)
+        zipf_file.write("\n")
+    print("Before applying Zipf's law, there were " + str(before) + " words in the corpus.")
+    print("After applying Zipf's law, there were " + str(after) + " words in the corpus.")
