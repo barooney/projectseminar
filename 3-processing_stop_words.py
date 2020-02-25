@@ -7,24 +7,32 @@ Created on Mon Nov 25 19:58:05 2019
 """
 
 # imports
+
+# standard library
 from collections import Counter
 import itertools 
 import json
-import nltk
 import os
+import argparse
+import sys
+
+# third party modules
+import nltk
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
+# application specific modules
 from models import Business, Review
-import argparse
+
 # DEFAULTS
 
 
-# Choose the state to filter reviews for
-parser = argparse.ArgumentParser(description="The script filters reviews for a given state. \
+# Choose the state to filter stop words for
+parser = argparse.ArgumentParser(description="The script filters stop words for a given state.\
                                  One parameter is required, the state: python3 ./3-processing_stop_words.py <state>. \
                                      For example, python3 ./3-processing_stop_words.py Illinois")
-parser.add_argument("state_input", help="Enter the state to filter reviews for: for example, python3 ./3-processing_stop_words.py Illinois",
+parser.add_argument("state_input", help="Enter the state to filter stop words for: for example,\
+                    python3 ./3-processing_stop_words.py Illinois",
                     type=str)
 args = parser.parse_args()
 STATE_TO_FILTER = args.state_input
@@ -100,17 +108,25 @@ type_token_ratio = len(WORDS_zipf)/len(all_words) # no stems, each unique orthog
 print("Type-token: ", type_token_ratio)
 
 # remove the 50 most frequent words except for good, food, place, cos they are relevant for the review
-words_without_stop_words = [word[0] for word in WORDS_zipf if word[2]>50 and word[1] > 1 if word not in ('good', 'food', 'place') ]
-print(words_without_stop_words[:100])
+words_without_stop_words = [word[0] for word in WORDS_zipf if word[2]>50 and word[1] > 1 or word[0] in ('good', 'food', 'place') ]
+stop_words = [zipf_tuple[0] for zipf_tuple in WORDS_zipf if zipf_tuple[2]<51 if zipf_tuple[0] not in ('good', 'food', 'place')]
+print("\n")
+print("no stoppys;", words_without_stop_words[:100])
+print("\n")
+print("stoppys:",stop_words)
+
+
+#ys.exit("das wars erst mal nur bis zipf")
 
 with open('./data/intermediate/' + STATE_TO_FILTER + '_zipf.json', 'w') as zipf_file:
     before = 0
     after = 0
     for r in tqdm(reviews):
-        review_words = set(reviews[r].text.split())
+        review_words = nltk.word_tokenize(reviews[r].text)   # we should also use the same tokenizing method here
         before += len(review_words)
         #print(r + " len before: " + str(len(review_words)))
-        intersect = list(set(review_words).intersection(words_without_stop_words))
+        #intersect = list(set(review_words).intersection(words_without_stop_words))
+        intersect = [word for word in review_words if word not in stop_words]
         after += len(intersect)
         #print(r + " len after: " + str(len(intersect)))
         reviews[r].text = " ".join(intersect)

@@ -20,7 +20,7 @@ from models import Business, Review
 parser = argparse.ArgumentParser(description="The script filters reviews for a given state. \
                                  One parameter is required, the state: python3 ./2-doc-stats.py <state>. \
                                      For example, python3 ./2-doc-stats.py Illinois")
-parser.add_argument("state_input", help="Enter the state to filter reviews for: for example, python3 ./2-doc-stats.py Illinois",
+parser.add_argument("state_input", help="Enter the state to filter reviews for: for example, python3 ./1-doc-stats.py Illinois",
                     type=str)
 args = parser.parse_args()
 STATE_TO_FILTER = args.state_input

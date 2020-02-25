@@ -1,3 +1,5 @@
+
+# third party modules
 import pandas as pd
 from sklearn.model_selection import train_test_split, cross_val_predict
 from sklearn.naive_bayes import GaussianNB
@@ -6,6 +8,8 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
+
+
 
 df = pd.read_json('./data/intermediate/Illinois_reviews.json', lines=True)
 labeled = df.query('funny>0 or cool>0 or useful>0')
@@ -20,7 +24,6 @@ print(unlabeled.shape)
 
 # #print(labeled.info())
 #print(df.sort_values(by=['funny'], ascending=False))
-
 
 
 
