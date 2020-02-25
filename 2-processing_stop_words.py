@@ -29,10 +29,10 @@ from models import Business, Review
 
 # Choose the state to filter stop words for
 parser = argparse.ArgumentParser(description="The script filters stop words for a given state.\
-                                 One parameter is required, the state: python3 ./3-processing_stop_words.py <state>. \
+                                 One parameter is required, the state: python3 ./2-processing_stop_words.py <state>. \
                                      For example, python3 ./3-processing_stop_words.py Illinois")
 parser.add_argument("state_input", help="Enter the state to filter stop words for: for example,\
-                    python3 ./3-processing_stop_words.py Illinois",
+                    python3 ./2-processing_stop_words.py Illinois",
                     type=str)
 args = parser.parse_args()
 STATE_TO_FILTER = args.state_input
@@ -118,7 +118,7 @@ print("stoppys:",stop_words)
 
 #ys.exit("das wars erst mal nur bis zipf")
 
-with open('./data/intermediate/' + STATE_TO_FILTER + '_zipf.json', 'w') as zipf_file:
+with open('./data/intermediate/' + STATE_TO_FILTER + '_reviews_zipf.json', 'w') as zipf_file:
     before = 0
     after = 0
     for r in tqdm(reviews):
