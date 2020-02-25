@@ -94,6 +94,7 @@ with open(data_path + '/yelp/yelp_academic_dataset_review.json', encoding="utf8"
     for l in tqdm(reviews_file.readlines()):
         r = Review(json.loads(l))
         if r.business_id in business_ids:
+            r.text = r.text.lower()
             reviews[r.review_id] = r
 
 print("# Reviews loaded: " + str(len(reviews.values())))
