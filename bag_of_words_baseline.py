@@ -8,10 +8,20 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
+import argparse
 
+# Choose the state to separate labels for words for
+parser = argparse.ArgumentParser(description="The script separates the reviews of a given state into labeld and unlabeled data.\
+                                 One parameter is required, the state: python3 ./3-processing_stop_words.py <state>. \
+                                     It outputs labeled and unlabeled data for both reviews with and without stop words.\
+                                         Make sure that step 2 '2-preprocessing_stop_words' has been carried out before.")
+parser.add_argument("state_input", help="Enter the state to separate data for: for example,\
+                    python3 ./2-separate_labeled_and_unlabeled.py Illinois",
+                    type=str)
+args = parser.parse_args()
+STATE_TO_FILTER = args.state_input
 
-
-df = pd.read_json('./data/intermediate/Illinois_reviews.json', lines=True)
+df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER + '_reviews_zipf.json', lines=True)
 labeled = df.query('funny>0 or cool>0 or useful>0')
 unlabeled = df.query('funny==0 and cool==0 and useful==0')
 print(df.shape)

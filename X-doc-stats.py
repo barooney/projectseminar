@@ -35,16 +35,21 @@ parser = argparse.ArgumentParser(description="The script generates stats for a g
     One parameter is required, the state: python3 ./2-doc-stats.py <state>. \
     For example, python3 ./2-doc-stats.py Illinois")
 parser.add_argument("state_input", help="Which state to show", type=str)
-parser.add_argument("-s", help="Whether to show the graph or save it in the docs folder.", type=bool, default=True)
+parser.add_argument("-s", help="Whether to show the graph or save it in the docs folder.", type=bool, default=False)
 args = parser.parse_args()
 STATE_TO_FILTER = args.state_input
 SHOW_GRAPH = args.s
 
-assert os.path.exists('./data/intermediate/' + STATE_TO_FILTER + '_reviews.json')
+filename = ''
+if STATE_TO_FILTER == 'all':
+    filename = './data/yelp/yelp_academic_dataset_review.json'
+else:
+    filename = './data/intermediate/' + STATE_TO_FILTER + '_reviews.json'
 
+assert os.path.exists(filename)
 
 print("Generating graph for " + STATE_TO_FILTER)
-df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER + '_reviews.json', lines=True)
+df = pd.read_json(filename, lines=True)
 cnt = Counter(df['funny'])
 
 cnt = dict(sorted(cnt.items(), key = lambda x:x[0] , reverse=False))
@@ -53,7 +58,7 @@ key = cnt.keys()
 df = pd.DataFrame(cnt, index=key).sort_index()
 df.drop(df.columns[1:], inplace=True)
 
-plt.scatter(cnt.keys(), cnt.values())
+plt.scatter(cnt.keys(), cnt.values(), s=10)
 
 # linreg
 X = np.array(list(cnt.keys()))#.reshape(-1, 1)  # values converts it into a numpy array
@@ -74,10 +79,18 @@ xs = np.linspace(0, np.max(X), 1000)
 plt.plot(xs, spl(xs), 'r', lw=1)
 # ###
 
-plt.title('Distribution of funny votes in ' + STATE_TO_FILTER)
+title = ''
+if STATE_TO_FILTER == 'all':
+    title = 'Distribution of funny votes across all states'
+else:
+    title = 'Distribution of funny votes in ' + STATE_TO_FILTER
+plt.title(title)
 plt.yscale("log")
+plt.xlabel("number of funny votes")
+plt.ylabel("number of reviews")
 
-if SHOW_GRAPH:
+print(SHOW_GRAPH)
+if int(SHOW_GRAPH):
     plt.show()
 else:
     try:
