@@ -9,6 +9,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import argparse
+import numpy as np
 
 # Choose the state to separate labels for words for
 parser = argparse.ArgumentParser(description="The script separates the reviews of a given state into labeld and unlabeled data.\
@@ -22,6 +23,17 @@ args = parser.parse_args()
 STATE_TO_FILTER = args.state_input
 
 df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER + '_reviews_zipf.json', lines=True)
+min_funny = 0
+max_funny = df['funny'].max()
+
+
+# Sturge's Rule:
+# K = 1 + 3. 322 log(N)
+# where:
+# K: num of bins
+# N: num of observations
+num_bins = 1 + 3.322 * np.log10(len(df))
+
 labeled = df.query('funny>0 or cool>0 or useful>0')
 unlabeled = df.query('funny==0 and cool==0 and useful==0')
 print(df.shape)
@@ -51,7 +63,15 @@ def train_model_baseline(df):
     #   0  | 1-2 | 3-5 | 6-10 | 11-40 | +40
     
     # TODO: Good bin size?
-    df['funniness_category'] = pd.cut(df.funny, bins=[-1,0,2,5,10,20,30,40,100], labels=[1,2,3,4,5,6,7,8])
+    bins = [min_funny-1]
+    samples = len(df)
+    for i in range(1, int(num_bins)):
+        bins.append(int(max_funny/num_bins*i))
+    bins.append(max_funny+1)
+    labels = range(0, len(bins)-1)
+    print(bins)
+    print(set(labels))
+    df['funniness_category'] = pd.cut(df.funny, bins=bins, labels=labels)
     
     
     df_shuffled = df.sample(frac=1)
