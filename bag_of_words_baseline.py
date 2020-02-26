@@ -1,6 +1,13 @@
+#modules
+
+# standard library
+import argparse
+import sys
+import math
 
 # third party modules
 import pandas as pd
+from scipy.stats import kurtosis
 from sklearn.model_selection import train_test_split, cross_val_predict
 from sklearn.naive_bayes import GaussianNB
 from sklearn.feature_extraction.text import CountVectorizer
@@ -8,19 +15,26 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
-import argparse
 import numpy as np
 
-# Choose the state to separate labels for words for
-parser = argparse.ArgumentParser(description="The script separates the reviews of a given state into labeld and unlabeled data.\
-                                 One parameter is required, the state: python3 ./3-processing_stop_words.py <state>. \
-                                     It outputs labeled and unlabeled data for both reviews with and without stop words.\
-                                         Make sure that step 2 '2-preprocessing_stop_words' has been carried out before.")
+# Choose the state train a naive Bayes classifier for with bag of words absolutely frequency represention
+parser = argparse.ArgumentParser(description="The script trains a naive Bayes classifier in order to predict one of several\
+                                 mutually exclusive 'funniness' categories. Each text is represented as a text sparse text vector\
+                                     counting ablsolute frequencies for each word in the text. All other words from the overall\
+                                         vocabulary that do not occur in the text get a zero.\
+                                 One parameter is required, the state: python3 ./bag_of_words_baseline.py <state>.")
 parser.add_argument("state_input", help="Enter the state to separate data for: for example,\
                     python3 ./2-separate_labeled_and_unlabeled.py Illinois",
                     type=str)
+parser.add_argument("--use_stop_words", help="use all reviews WITH stop words instead of the ones adjusted for stop words", action="store_true")
 args = parser.parse_args()
 STATE_TO_FILTER = args.state_input
+if args.use_stop_words:
+    print("Reviews WITH stop words are being used now.")
+    df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER + '_reviews.json', lines=True)
+else:
+    print("Reviews WIHTOUT stop words are being used now.")
+
 
 df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER + '_reviews_zipf.json', lines=True)
 min_funny = 0
@@ -32,8 +46,24 @@ max_funny = df['funny'].max()
 # where:
 # K: num of bins
 # N: num of observations
-num_bins = 1 + 3.322 * np.log10(len(df))
 
+# calc sturges rule
+# num_bins = 1 + 3.322 * np.log10(len(df))
+# print(num_bins)
+
+
+# Doane's formula
+# k = 1 + log2(n) + log2(1 + ( |g_1| / sigma_g_1))
+# g_1 = ( (6(n-2)) / ((n+1)(n+3)) )^0.5
+
+# calc doane's formulara
+N = len(df)
+sigma_g_1 = math.sqrt(((6*(N-2)) / ((N+1)*(N+3))))
+num_bins = 1 + math.log2(N) + math.log2(1+ abs(kurtosis(df['funny'].tolist())/sigma_g_1))
+print(num_bins)
+
+
+######
 labeled = df.query('funny>0 or cool>0 or useful>0')
 unlabeled = df.query('funny==0 and cool==0 and useful==0')
 print(df.shape)
@@ -81,7 +111,19 @@ def train_model_baseline(df):
     labels = df_shuffled['funniness_category'].values 
     texts = df_shuffled['text'].values 
     
-   
+    # histogram 
+    X = df['funny'].tolist()
+    n, bins, patches = plt.hist(X, int(num_bins), facecolor='blue', density=True)
+    plt.title('histogram')
+    plt.xlabel('funny votes')
+    plt.ylabel('frequency densitiy')
+    plt.show()
+    
+    #### test
+    sys.exit("nur bis hier")
+    #####
+    
+    
     ####################################
     
     vectorizer = CountVectorizer(binary=False, stop_words='english')
