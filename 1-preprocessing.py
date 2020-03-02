@@ -99,14 +99,14 @@ with open(data_path + '/yelp/yelp_academic_dataset_review.json', encoding="utf8"
 
 print("# Reviews loaded: " + str(len(reviews.values())))
 
-businesses_intermediate_file = open(intermediate_data_path + '/' + STATE_TO_FILTER + '_businesses.json', 'w')
+businesses_intermediate_file = open(intermediate_data_path + '/' + STATE_TO_FILTER.replace(" ", "") + '_businesses.json', 'w')
 for b in tqdm(businesses):
     if businesses[b].business_id in business_ids:
         json.dump(businesses[b].__dict__, businesses_intermediate_file)
         businesses_intermediate_file.write("\n")
 businesses_intermediate_file.close()
 
-reviews_intermediate_file = open(intermediate_data_path + '/' + STATE_TO_FILTER + '_reviews.json', 'w')
+reviews_intermediate_file = open(intermediate_data_path + '/' + STATE_TO_FILTER.replace(" ", "") + '_reviews.json', 'w')
 for r in tqdm(reviews):
     json.dump(reviews[r].__dict__, reviews_intermediate_file)
     reviews_intermediate_file.write("\n")
