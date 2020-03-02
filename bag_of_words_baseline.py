@@ -101,7 +101,8 @@ def train_model_baseline(df):
     labels = range(0, len(bins)-1)
     print(bins)
     print(set(labels))
-    df['funniness_category'] = pd.cut(df.funny, bins=bins, labels=labels)
+    #df['funniness_category'] = pd.cut(df.funny, bins=bins, labels=labels)
+    df['funniness_category'] = pd.cut(df.funny, bins=[-1,0,1,2,3,4,5,max_funny], labels=[1,2,3,4,5,6,7])
     
     
     df_shuffled = df.sample(frac=1)
@@ -113,7 +114,9 @@ def train_model_baseline(df):
     
     # histogram 
     X = df['funny'].tolist()
-    n, bins, patches = plt.hist(X, int(num_bins), facecolor='blue', density=True)
+    #n, bins, patches = plt.hist(X, int(num_bins), facecolor='blue', density=True)
+    #n, bins, patches = plt.hist(X, [0,1,2,3,4,5,6,max_funny], facecolor='blue', density=True)
+    n, bins, patches = plt.hist(X, [0,1,max_funny], facecolor='blue', density=True)
     plt.title('histogram')
     plt.xlabel('funny votes')
     plt.ylabel('frequency densitiy')
