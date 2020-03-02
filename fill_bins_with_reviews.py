@@ -38,7 +38,7 @@ def fill_bins(STATE, states_to_fetch_reviews):
       
     # set bins
     max_funny = df_basis['funny'].max()
-    bins =  [-1,0,1,2,5,max_funny]
+    bins =  [-1,0,1,2,5,9999999999999999]
     labels=[number for number in range(1,len(bins))]
     
     #### assign bins
@@ -58,7 +58,7 @@ def fill_bins(STATE, states_to_fetch_reviews):
     counter_obj = Counter(df_basis['funniness_category'].tolist())
     print("before filling: ", counter_obj)
     max_reviews_in_highest_bin = counter_obj.most_common(1)[0][1]
-    
+    print("max reviews in highest bin: " + str(max_reviews_in_highest_bin))
     
     # fill the basis state with reviews from the other states
     for bin_number, num_reviews in tqdm.tqdm(counter_obj.items()):
@@ -69,14 +69,16 @@ def fill_bins(STATE, states_to_fetch_reviews):
                     loot_state_corresponding_bin_number = dataframe_state.query('funniness_category==@bin_number')
                     # the number of reviews for a class that is being filled cannot exceed the number of reviews 
                     # of the class with the most reviews prior to filling
+                    num = loot_state_corresponding_bin_number.shape[0] + df_basis.query('funniness_category==@bin_number').shape[0]
+                    print(str(num) + " / " + str(max_reviews_in_highest_bin))
                     if loot_state_corresponding_bin_number.shape[0] + df_basis.query('funniness_category==@bin_number').shape[0] <= max_reviews_in_highest_bin:
                         df_basis = pd.concat([df_basis, loot_state_corresponding_bin_number], ignore_index=True)
                     else:
                         # only fill as many reviews as the class with the most reviews has
                         number_of_rows_to_add = max_reviews_in_highest_bin - df_basis.query('funniness_category==@bin_number').shape[0]
                         df_basis = pd.concat([df_basis, loot_state_corresponding_bin_number.head(number_of_rows_to_add)], ignore_index=True)
-                else:
-                    break
+                # else:
+                #     break
     
     
     # print stuff
