@@ -36,7 +36,7 @@ else:
     print("Reviews WIHTOUT stop words are being used now.")
 
 
-df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER + '_reviews_zipf.json', lines=True)
+#df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER + '_reviews_zipf.json', lines=True)
 min_funny = 0
 max_funny = df['funny'].max()
 
@@ -82,7 +82,7 @@ print(unlabeled.shape)
 
 ##########################
 
-def train_model_baseline(df):
+def train_model_baseline(df, name):
     '''use bag of words as feature representation and naive Bayes as classifier'''
     
     # create funniness categories
@@ -102,7 +102,7 @@ def train_model_baseline(df):
     print(bins)
     print(set(labels))
     #df['funniness_category'] = pd.cut(df.funny, bins=bins, labels=labels)
-    df['funniness_category'] = pd.cut(df.funny, bins=[-1,0,1,2,3,4,5,max_funny], labels=[1,2,3,4,5,6,7])
+    #df['funniness_category'] = pd.cut(df.funny, bins=[-1,0,1,2,3,4,5,max_funny], labels=[1,2,3,4,5,6,7])
     
     
     df_shuffled = df.sample(frac=1)
@@ -120,10 +120,11 @@ def train_model_baseline(df):
     plt.title('histogram')
     plt.xlabel('funny votes')
     plt.ylabel('frequency densitiy')
-    plt.show()
+    #plt.show()
+    plt.savefig('./doc/images/density_' + name + '.pdf', format='pdf')
     
     #### test
-    sys.exit("nur bis hier")
+    #sys.exit("nur bis hier")
     #####
     
     
@@ -185,12 +186,14 @@ def train_model_baseline(df):
     print("Confusion Matrix")
     print(conf_mx)
     plt.matshow(conf_mx, cmap=plt.cm.gray)
-    plt.show()
+    #plt.show()
+    plt.savefig('./doc/images/confusion_matrix_' + name + '.pdf', format='pdf')
+    plt.savefig('./doc/images/confusion_matrix_' + name + '.png', format='png')
     
     
 if __name__ == "__main__": 
     print("no condition:\n")
-    train_model_baseline(df)       # no condition, i.e. whole Illinois set, regardlass of all votes zero 
+    train_model_baseline(df, 'no_cond')       # no condition, i.e. whole Illinois set, regardlass of all votes zero 
     print("-------------------------------\n")
     print("with condition:\n")
-    train_model_baseline(labeled)   # with condition, see diagram
+    train_model_baseline(labeled, 'labeled')   # with condition, see diagram
