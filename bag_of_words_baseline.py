@@ -29,9 +29,9 @@ parser.add_argument("state_input", help="Enter the state to separate data for: f
 parser.add_argument("--use_stop_words", help="use all reviews WITH stop words instead of the ones adjusted for stop words", action="store_true")
 args = parser.parse_args()
 STATE_TO_FILTER = args.state_input
+df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER + '_reviews.json', lines=True)
 if args.use_stop_words:
-    print("Reviews WITH stop words are being used now.")
-    df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER + '_reviews.json', lines=True)
+    print("Reviews WITH stop words are being used now.")   
 else:
     print("Reviews WIHTOUT stop words are being used now.")
 
@@ -116,7 +116,13 @@ def train_model_baseline(df, name):
     X = df['funny'].tolist()
     #n, bins, patches = plt.hist(X, int(num_bins), facecolor='blue', density=True)
     #n, bins, patches = plt.hist(X, [0,1,2,3,4,5,6,max_funny], facecolor='blue', density=True)
-    n, bins, patches = plt.hist(X, [0,1,2,3,6,max_funny], facecolor='blue', density=True)
+    n, bins, patches = plt.hist(X, [0,1,2,3,6,max_funny], edgecolor='white', density=True)
+    patches[0].set_facecolor('b')   
+    patches[1].set_facecolor('r')
+    patches[2].set_facecolor('yellow')
+    patches[3].set_facecolor('black') 
+    patches[4].set_facecolor('green')
+    
     plt.title('histogram')
     plt.xlabel('funny votes')
     plt.ylabel('frequency densitiy')
