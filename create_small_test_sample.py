@@ -2,9 +2,10 @@ import pandas as pd
 from collections import Counter
 from tqdm import tqdm
 import json
+import sys
 
 df_basis = pd.read_json('./data/yelp/yelp_academic_dataset_review.json', lines=True)
-	
+
 # set bins
 max_funny = df_basis['funny'].max()
 bins =  [-1,0,1,2,5,9999999999999999]
