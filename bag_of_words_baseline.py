@@ -116,7 +116,7 @@ def train_model_baseline(df, name):
     X = df['funny'].tolist()
     #n, bins, patches = plt.hist(X, int(num_bins), facecolor='blue', density=True)
     #n, bins, patches = plt.hist(X, [0,1,2,3,4,5,6,max_funny], facecolor='blue', density=True)
-    n, bins, patches = plt.hist(X, [0,1,max_funny], facecolor='blue', density=True)
+    n, bins, patches = plt.hist(X, [0,1,2,3,6,max_funny], facecolor='blue', density=True)
     plt.title('histogram')
     plt.xlabel('funny votes')
     plt.ylabel('frequency densitiy')
@@ -183,12 +183,26 @@ def train_model_baseline(df, name):
     y_train_pred = cross_val_predict(gnb, features_train, labels_train, cv=3)
     conf_mx = confusion_matrix(labels_train, y_train_pred)
 
-    print("Confusion Matrix")
+    print("Confusion Matrix for cross validation on training set.\nTest set remained untouched.")
     print(conf_mx)
     plt.matshow(conf_mx, cmap=plt.cm.gray)
     #plt.show()
     plt.savefig('./doc/images/confusion_matrix_' + name + '.pdf', format='pdf')
     plt.savefig('./doc/images/confusion_matrix_' + name + '.png', format='png')
+     
+    # devide each cell of the confusion matrix by the total number of reviews corresponing to a class
+    # to get only relative numbers in case classes have an uneuqal number of reviews
+    # each row sum is equal to the total number of reviews in a class
+    row_sums = conf_mx.sum(axis=1, keepdims=True)
+    norm_conf_mx = conf_mx / row_sums
+    # full the diagonal with zeros in order to keep only the errors:
+    np.fill_diagonal(norm_conf_mx, 0)
+    
+    print("Confusion Matrix showing only the errors:")
+    plt.matshow(norm_conf_mx, cmap=plt.cm.gray)
+    plt.savefig('./doc/images/confusion_matrix_errors_' + name + '.pdf', format='pdf')
+    plt.savefig('./doc/images/confusion_matrix_errors_' + name + '.png', format='png')
+    
     
     
 if __name__ == "__main__": 
