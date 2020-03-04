@@ -31,7 +31,7 @@ for bin_number, num_reviews in tqdm(counter_obj.items()):
 print(str(min_bin))
 print(asdf)
 
-output_file = open('./data/intermediate/random-small.json', 'w')
+output_file = open('./data/intermediate/random-small_reviews.json', 'w')
 for e in asdf:
 	asdf[e] = asdf[e].sample(frac=1).head(2000)
 	for row in asdf[e].iterrows():
