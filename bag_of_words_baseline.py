@@ -16,6 +16,10 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import numpy as np
+#from sklearn.metrics import plot_confusion_matrix
+from mlxtend.plotting import plot_confusion_matrix
+
+
 
 # Choose the state train a naive Bayes classifier for with bag of words absolutely frequency represention
 parser = argparse.ArgumentParser(description="The script trains a naive Bayes classifier in order to predict one of several\
@@ -109,7 +113,7 @@ def train_model_baseline(df, name):
     
     
     #labels = df_shuffled['funny'].values 
-    labels = df_shuffled['funniness_category'].values 
+    labels = np.array(df_shuffled['funniness_category'].values)
     texts = df_shuffled['text'].values 
     
     # histogram 
@@ -118,16 +122,17 @@ def train_model_baseline(df, name):
     #n, bins, patches = plt.hist(X, [0,1,2,3,4,5,6,max_funny], facecolor='blue', density=True)
     n, bins, patches = plt.hist(X, [0,1,2,3,6,max_funny], edgecolor='white', density=True)
     patches[0].set_facecolor('b')   
-    patches[1].set_facecolor('r')
+    patches[1].set_facecolor('green')
     patches[2].set_facecolor('yellow')
     patches[3].set_facecolor('black') 
-    patches[4].set_facecolor('green')
+    patches[4].set_facecolor('r')
     
     plt.title('histogram')
     plt.xlabel('funny votes')
     plt.ylabel('frequency densitiy')
     #plt.show()
     plt.savefig('./doc/images/density_' + name + '.pdf', format='pdf')
+    plt.close()
     
     #### test
     #sys.exit("nur bis hier")
@@ -144,7 +149,7 @@ def train_model_baseline(df, name):
     
     vectorizer.transform(texts)
       
-    features = pd.DataFrame(vectorizer.transform(texts).toarray(), columns=sorted(vectorizer.vocabulary_.keys()))
+    features = np.array(pd.DataFrame(vectorizer.transform(texts).toarray(), columns=sorted(vectorizer.vocabulary_.keys())))
       
     #df[df['text'].str.contains('黄鳝')]
     
@@ -154,8 +159,8 @@ def train_model_baseline(df, name):
     features_train, features_test, labels_train, labels_test = train_test_split(features, labels, test_size=0.20, random_state=20)
     
     # 70% Trainingsdaten 
-    # print(features_train)
-    # print(labels_train)
+    print("features train:\n" ,features_train)#.reshape(-1,1))
+    print("labels train:\n" ,labels_train)
     # #
     # ## 30 % Testdaten
     # print(features_test)
@@ -187,27 +192,79 @@ def train_model_baseline(df, name):
     # X_train_scaled = scaler.fit_transform()
 
     y_train_pred = cross_val_predict(gnb, features_train, labels_train, cv=3)
-    conf_mx = confusion_matrix(labels_train, y_train_pred)
+    
 
-    print("Confusion Matrix for cross validation on training set.\nTest set remained untouched.")
-    print(conf_mx)
-    plt.matshow(conf_mx, cmap=plt.cm.gray)
-    #plt.show()
+    print("Confusion Matrix for cross validation on training set is saved now...\nTest set remained untouched.")
+    
+    # plot_confusion_matrix from mlxtend module is used in the following lines. 
+    # and not scikits learn's function with the same name
+    
+    conf_mx = confusion_matrix(labels_train, y_train_pred)
+    fig, ax = plot_confusion_matrix(conf_mat=conf_mx,
+                                    cmap=plt.cm.Greys,
+                                colorbar=True,
+                                show_absolute=True,
+                                show_normed=True)
+    ax.set_title("Confusion matrix")
     plt.savefig('./doc/images/confusion_matrix_' + name + '.pdf', format='pdf')
     plt.savefig('./doc/images/confusion_matrix_' + name + '.png', format='png')
-     
-    # devide each cell of the confusion matrix by the total number of reviews corresponing to a class
-    # to get only relative numbers in case classes have an uneuqal number of reviews
-    # each row sum is equal to the total number of reviews in a class
-    row_sums = conf_mx.sum(axis=1, keepdims=True)
-    norm_conf_mx = conf_mx / row_sums
-    # full the diagonal with zeros in order to keep only the errors:
-    np.fill_diagonal(norm_conf_mx, 0)
     
-    print("Confusion Matrix showing only the errors:")
-    plt.matshow(norm_conf_mx, cmap=plt.cm.gray)
+    
+    ## plotting confusion matrix with errors
+    
+    
+    # # full the diagonal with zeros in order to keep only the errors:
+    # mlxtend's plot_confusion_matrix has a built in function to show relative frequency, 
+    # no need to divide each cell by the row sum
+    np.fill_diagonal(conf_mx, 0)
+    print(conf_mx)
+   
+    fig, ax = plot_confusion_matrix(conf_mat=conf_mx,
+                                    cmap=plt.cm.Greys,
+                                  colorbar=True,
+                                  show_absolute=False,
+                                  show_normed=True)
+    ax.set_title("Confusion matrix showing errors")
+    print("Confusion Matrix showing only the errors is saved now..")
+    #plt.figure(1)
     plt.savefig('./doc/images/confusion_matrix_errors_' + name + '.pdf', format='pdf')
     plt.savefig('./doc/images/confusion_matrix_errors_' + name + '.png', format='png')
+    
+    
+    
+    ###############################################################################################
+    ############################################ old stuff ########################################
+    
+    # title = "Confusion matrix with abssolute frequencies"
+    # class_names = [1,2,3,4,5]
+    # disp = plot_confusion_matrix(classifier_fitted, labels_train.reshape(-1, 1), y_train_pred,
+    #                              display_labels=class_names,
+    #                              cmap=plt.cm.Blues,
+    #                              normalize=None)
+    # disp.ax_.set_title(title)
+    # print(title)
+    # print(disp.confusion_matrix)
+    # plt.show()
+    
+    #conf_mx = confusion_matrix(labels_train, y_train_pred)
+    # print(conf_mx)
+    # plt.matshow(c, cmap=plt.cm.gray)
+    # #plt.show()
+    # plt.savefig('./doc/images/confusion_matrix_' + name + '.pdf', format='pdf')
+    # plt.savefig('./doc/images/confusion_matrix_' + name + '.png', format='png')
+     
+    # # devide each cell of the confusion matrix by the total number of reviews corresponing to a class
+    # # to get only relative numbers in case classes have an uneuqal number of reviews
+    # # each row sum is equal to the total number of reviews in a class
+    # row_sums = conf_mx.sum(axis=1, keepdims=True)
+    # norm_conf_mx = conf_mx / row_sums
+    # # full the diagonal with zeros in order to keep only the errors:
+    # np.fill_diagonal(norm_conf_mx, 0)
+    
+    # print("Confusion Matrix showing only the errors:")
+    # plt.matshow(norm_conf_mx, cmap=plt.cm.gray)
+    # plt.savefig('./doc/images/confusion_matrix_errors_' + name + '.pdf', format='pdf')
+    # plt.savefig('./doc/images/confusion_matrix_errors_' + name + '.png', format='png')
     
     
     
