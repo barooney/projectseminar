@@ -210,9 +210,6 @@ def train_model_baseline(df, name):
 
     print("Confusion Matrix for cross validation on training set.\nTest set remained untouched.")
     print(conf_mx)
-    plt.title("Confusion Matrix " + ("(no condition)" if name == 'no_cond' else ""))
-    plt.matshow(conf_mx, cmap=plt.cm.gray)
-    #plt.show()
 
     plt.savefig('./doc/images/confusion_matrix_' + name + '.pdf', format='pdf')
     plt.savefig('./doc/images/confusion_matrix_' + name + '.png', format='png')
