@@ -10,7 +10,9 @@ from tqdm import tqdm
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, cross_val_predict, cross_val_score, cross_validate
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, precision_score, recall_score, f1_score, make_scorer
-
+import matplotlib.pyplot as plt
+#from sklearn.metrics import plot_confusion_matrix
+from mlxtend.plotting import plot_confusion_matrix
 
 # install English language first via: python -m spacy download en_core_web_sm
 
@@ -117,7 +119,52 @@ print(recall_score(labels_train, y_train_predict, average="weighted"))
 print("f1 score:")    
 print(f1_score(labels_train, y_train_predict, average="weighted"))  
 
-                             
+  
+############ confusion matrix #########
+
+print("Confusion Matrix for cross validation on training set is saved now...\nTest set remained untouched.")
+    
+# plot_confusion_matrix from mlxtend module is used in the following lines. 
+# and not scikits learn's function with the same name
+    
+conf_mx = confusion_matrix(labels_train, y_train_predict)
+fig, ax = plot_confusion_matrix(conf_mat=conf_mx,
+                                    cmap=plt.cm.Blues,
+                                colorbar=True,
+                                show_absolute=True,
+                                show_normed=True)
+ax.set_title("Confusion matrix")
+plt.show()
+print("Confusion Matrix for cross validation on training set.\nTest set remained untouched.")
+print(conf_mx)
+
+#plt.savefig('./doc/images/confusion_matrix_' + name + '.pdf', format='pdf')
+#plt.savefig('./doc/images/confusion_matrix_' + name + '.png', format='png')
+    
+    
+## plotting confusion matrix with errors
+    
+    
+# # full the diagonal with zeros in order to keep only the errors:
+# mlxtend's plot_confusion_matrix has a built in function to show relative frequency, 
+# no need to divide each cell by the row sum
+np.fill_diagonal(conf_mx, 0)
+print(conf_mx)
+   
+fig, ax = plot_confusion_matrix(conf_mat=conf_mx,
+                                    cmap=plt.cm.Blues,
+                                  colorbar=True,
+                                  show_absolute=False,
+                                  show_normed=True)
+ax.set_title("Confusion matrix showing errors")
+print("Confusion Matrix showing only the errors is saved now..")
+plt.show()
+#plt.savefig('./doc/images/confusion_matrix_errors_' + name + '.pdf', format='pdf')
+#plt.savefig('./doc/images/confusion_matrix_errors_' + name + '.png', format='png')
+
+
+
+                           
 #labels_pred = softmax_reg.predict(features_validate)
      
 
