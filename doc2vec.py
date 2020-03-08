@@ -123,12 +123,12 @@ fig, ax = plot_confusion_matrix(conf_mat=conf_mx,
                                 show_absolute=True,
                                 show_normed=True)
 ax.set_title("Confusion matrix")
-plt.show()
+#plt.show()
 print("Confusion Matrix for cross validation on training set.\nTest set remained untouched.")
 print(conf_mx)
 
-#plt.savefig('./doc/images/confusion_matrix_' + name + '.pdf', format='pdf')
-#plt.savefig('./doc/images/confusion_matrix_' + name + '.png', format='png')
+plt.savefig('./doc/images/doc2vec-confusion.pdf', format='pdf')
+plt.savefig('./doc/images/doc2vec-confusion.png', format='png')
     
     
 ## plotting confusion matrix with errors
@@ -147,9 +147,9 @@ fig, ax = plot_confusion_matrix(conf_mat=conf_mx,
                                   show_normed=True)
 ax.set_title("Confusion matrix showing errors")
 print("Confusion Matrix showing only the errors is saved now..")
-plt.show()
-#plt.savefig('./doc/images/confusion_matrix_errors_' + name + '.pdf', format='pdf')
-#plt.savefig('./doc/images/confusion_matrix_errors_' + name + '.png', format='png')
+#plt.show()
+plt.savefig('./doc/images/doc2vec-confusion-errors.pdf', format='pdf')
+plt.savefig('./doc/images/doc2vec-confusion-errors.png', format='png')
 
                            
 #labels_pred = softmax_reg.predict(features_validate)
@@ -178,7 +178,8 @@ fig, ax = plot_confusion_matrix(conf_mat=conf_mx,
                                 show_absolute=True,
                                 show_normed=True)
 ax.set_title("Confusion matrix")
-plt.show()
+plt.savefig('doc/images/doc2vec-confusion-random-forest.png', format='png')
+plt.savefig('doc/images/doc2vec-confusion-random-forest.pdf', format='pdf')
 print("Confusion Matrix for cross validation on training set.\nTest set remained untouched.")
 print(conf_mx)
 
@@ -192,3 +193,5 @@ print("recall:")
 print(recall_score(labels_test, y_pred_rf, average="weighted"))   
 print("f1 score:")    
 print(f1_score(labels_test, y_pred_rf, average="weighted")) 
+
+model.save('data/intermediate/doc2vec.model')
