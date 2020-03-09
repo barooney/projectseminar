@@ -35,20 +35,27 @@ parser = argparse.ArgumentParser(description="The script trains a naive Bayes cl
                                       adjusted for stop words) is created. If none is given, it is assumed the random small sample already exits.")
 parser.add_argument('bins_input', help="Enter a list of bins: lower values excluded, upper values included,\n\
                     e.g.: python3 ./create_small_test_sample.py [-1,1,2,5,10]. If none is given it is assumed the sample file already exists."
-                    , nargs='?', type=str)
+                    , nargs='?')
 args = parser.parse_args()
 input_bins = args.bins_input
 
 
 # create a suitable sample in terms of the desired bin sizes if bins are given
 
-if not len(sys.argv) > 1:
+if len(sys.argv) > 1:
     print("a new sample is creating using bins: {}".format(input_bins))
-    #create_test_sample(list(input_bins))
+    input_bins = eval(input_bins)
+    #create_test_sample(input_bins)
 else:
     print("a sample file that already exists is going to be used.")
+    file_name = [f for f in os.listdir('./data/intermediate/') if re.match(r'random.+_.+_reviews.json', f)][0]
+    #input_bins = file_name.split("_")[1].split(".")
+    input_bins = [int(number) for number in file_name.split("_")[1].split(".")]
+    print(input_bins)
 
-print(input_bins)
+
+
+#print(type(input_bins))
 
 sys.exit()
 
