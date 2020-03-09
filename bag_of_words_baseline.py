@@ -4,6 +4,8 @@
 import argparse
 import sys
 import math
+import os 
+import re
 
 # third party modules
 import pandas as pd
@@ -19,6 +21,7 @@ import numpy as np
 #from sklearn.metrics import plot_confusion_matrix
 from mlxtend.plotting import plot_confusion_matrix
 
+
 # application specifc
 from create_small_test_sample import create_test_sample
 from histogram import create_histograms
@@ -29,16 +32,31 @@ from confusion_matrices import create_confusion_matrices
 # Choose the state train a naive Bayes classifier for with bag of words absolutely frequency represention
 parser = argparse.ArgumentParser(description="The script trains a naive Bayes classifier using bag of words as feature representation.\
                                  Bin sizes as a list can be given as an argument so that a random small sample based on all reviews (already \
-                                      adjusted for stop words) is created. If none is given, the default bin size is used.")
+                                      adjusted for stop words) is created. If none is given, it is assumed the random small sample already exits.")
 parser.add_argument('bins_input', help="Enter a list of bins: lower values excluded, upper values included,\n\
-                    e.g.: python3 ./create_small_test_sample.py [-1,1,2,5,10]. Default bins are: [-1,1,3,5,10,100,9999999999999999]"
-                    , nargs='?', default=[-1,1,3,5,10,100,9999999999999999], type=str)
+                    e.g.: python3 ./create_small_test_sample.py [-1,1,2,5,10]. If none is given it is assumed the sample file already exists."
+                    , nargs='?', type=str)
 args = parser.parse_args()
 input_bins = args.bins_input
 
 
-STATE_TO_FILTER  = "random-small"
-df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER + '_reviews_zipf.json', lines=True)
+# create a suitable sample in terms of the desired bin sizes if bins are given
+
+if not len(sys.argv) > 1:
+    print("a new sample is creating using bins: {}".format(input_bins))
+    #create_test_sample(list(input_bins))
+else:
+    print("a sample file that already exists is going to be used.")
+
+print(input_bins)
+
+sys.exit()
+
+# read random sample that is used for training 
+STATE_TO_FILTER = [f for f in os.listdir('./data/intermediate/') if re.match(r'.+_.+_reviews.json', f)][0]
+
+df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER , lines=True)
+
 min_funny = 0
 max_funny = df['funny'].max()
 
@@ -65,13 +83,10 @@ print(unlabeled.shape)
 
 def train_model_baseline(df, name):
     '''use bag of words as feature representation and naive Bayes as classifier'''
-    
-   # create a suitable sample in terms of the desired bin sizes
-    create_test_sample(input_bins)
+
       
     df_shuffled = df.sample(frac=1)
-    
-    
+        
     #labels = df_shuffled['funny'].values 
     labels = np.array(df_shuffled['funniness_category'].values)
     texts = df_shuffled['text'].values 

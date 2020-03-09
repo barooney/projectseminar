@@ -39,7 +39,9 @@ def create_test_sample(bins):
     print(str(min_bin))
     print(bin_separations)
     
-    output_file = open('./data/intermediate/random-small_reviews.json', 'w')
+    bins_as_file_name = ".".join(bins)
+    
+    output_file = open('./data/intermediate/random-small_' + bins_as_file_name + '_reviews.json', 'w')
     for bin in bin_separations:
     	bin_separations[bin] = bin_separations[bin].sample(frac=1).head(2000)
     	for row in bin_separations[bin].iterrows():
