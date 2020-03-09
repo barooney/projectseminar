@@ -45,11 +45,10 @@ input_bins = args.bins_input
 if len(sys.argv) > 1:
     print("a new sample is creating using bins: {}".format(input_bins))
     input_bins = eval(input_bins)
-    #create_test_sample(input_bins)
+    create_test_sample(input_bins)
 else:
     print("a sample file that already exists is going to be used.")
     file_name = [f for f in os.listdir('./data/intermediate/') if re.match(r'random.+_.+_reviews.json', f)][0]
-    #input_bins = file_name.split("_")[1].split(".")
     input_bins = [int(number) for number in file_name.split("_")[1].split(".")]
     print(input_bins)
 
