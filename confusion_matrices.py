@@ -12,11 +12,11 @@ def create_confusion_matrices(labels_train, y_train_pred, name):
     
     conf_mx = confusion_matrix(labels_train, y_train_pred)
     fig, ax = plot_confusion_matrix(conf_mat=conf_mx,
-                                    cmap=plt.cm.Greys,
+                                    cmap=plt.cm.Blues,
                                 colorbar=True,
                                 show_absolute=True,
                                 show_normed=True)
-    ax.set_title("Confusion matrix " + "(no condition)" if name == 'no_cond' else "(labeled)")
+    ax.set_title("Confusion matrix " + "(no condition)" if name == 'no_cond' else "Confusion matrix " + "(labeled)")
 
     print("Confusion Matrix for cross validation on training set.\nTest set remained untouched.")
     print(conf_mx)
@@ -35,11 +35,11 @@ def create_confusion_matrices(labels_train, y_train_pred, name):
     print(conf_mx)
    
     fig, ax = plot_confusion_matrix(conf_mat=conf_mx,
-                                    cmap=plt.cm.Greys,
+                                    cmap=plt.cm.Blues,
                                   colorbar=True,
                                   show_absolute=False,
                                   show_normed=True)
-    ax.set_title("Confusion matrix showing errors " + "(no condition)" if name == 'no_cond' else "(labeled)")
+    ax.set_title("Confusion matrix showing errors " + "(no condition)" if name == 'no_cond' else "Confusion matrix showing errors " + "(labeled)")
     print("Confusion Matrix showing only the errors is saved now..")
     #plt.figure(1)
     plt.savefig('./doc/images/confusion_matrix_errors_' + name + '.pdf', format='pdf')

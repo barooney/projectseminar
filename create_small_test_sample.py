@@ -39,7 +39,8 @@ def create_test_sample(bins):
     print(str(min_bin))
     print(bin_separations)
     
-    bins_as_file_name = ".".join(bins)
+    bin_names_as_strings = map(lambda x: str(x), bins)
+    bins_as_file_name = ".".join(bin_names_as_strings)
     
     output_file = open('./data/intermediate/random-small_' + bins_as_file_name + '_reviews.json', 'w')
     for bin in bin_separations:
