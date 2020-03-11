@@ -26,6 +26,7 @@ from mlxtend.plotting import plot_confusion_matrix
 from create_small_test_sample import create_test_sample
 from histogram import create_histograms
 from confusion_matrices import create_confusion_matrices
+from classifiers import train_and_predict_multinomial_naive_bayes
 
 
 
@@ -117,48 +118,16 @@ def train_model_baseline(df, name):
     #df[df['text'].str.contains('黄鳝')]
     
     
-    ################ train classifier #############
-    
-    features_train, features_test, labels_train, labels_test = train_test_split(features, labels, test_size=0.20, random_state=20)
-    
-    # 80% Trainingsdaten 
-    print("features train:\n" ,features_train)#.reshape(-1,1))
-    print("labels train:\n" ,labels_train)
-    # #
-    # ## 20 % Testdaten
-    # print(features_test)
-    # print(labels_test)
-    
-     
-    # # create classifier: 
-    # GaussianNB did not produce a result, hence MultinomialNB was used
-    gnb = MultinomialNB()
-    
-    # # train classifier with training set: 
-    gnb.fit(features_train, labels_train)
-    
-    # # use classifier on test set: 
-    labels_pred = gnb.predict(features_test)
-    print("Result for test set:")
-    print(labels_pred)
-    
-    # # How well is the classifier performing? 
-    print("\nAccuracy:")
-    print(accuracy_score(labels_test, labels_pred))
-    #print(gnb.score(features_test, labels_test))
-    
-    # report
-    print("\nReport:")
-    print(classification_report(labels_test, labels_pred))
+    ################ train classifier and predict with cross validation on training set #############
 
-    # scaler = StandardScaler()
-    # X_train_scaled = scaler.fit_transform()
-
-    y_train_pred = cross_val_predict(gnb, features_train, labels_train, cv=3)
+    labels_train, y_train_pred = train_and_predict_multinomial_naive_bayes(features, labels)
     
 
     ####### confusion matrix##
-    create_confusion_matrices(labels_train, y_train_pred, name)
+    if name == 'no_cond':
+        create_confusion_matrices(labels_train, y_train_pred)
+    else:
+        create_confusion_matrices(labels_train, y_train_pred, condition=True)
     
     
     
