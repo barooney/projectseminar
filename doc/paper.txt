@@ -20,7 +20,7 @@ Text classification is applied in a number of fields and situations. @jurafski_m
 # Dataset
 
 The semi-structured dataset taken from Kaggle consists of five JSON files including reviewed businesses, a record of dates and locations when reviewers were at a business, the actual user reviews, a list of tips given by users and information on users who wrote reviews.
-Since our focus lies on text classification we only use the file containing users' reviews totalling roughly 5.2 million reviews in (mostly) English language. The other files help us reduce the amount of reviews to a managable size because they contain additional information such as in which state a review was made. This allowed grouping reviews by states of the USA. Furthermore, each review is rated how 'funny', 'cool' and 'helpful' it is by the Yelp user base. For instance, a given review might be rated 'funny' three times, 'cool' zero times and 'helpful' five times. But it could also have zero ratings for all three categories. 
+Since our focus lies on text classification we only use the file containing users' reviews totalling roughly 5.2 million reviews in (mostly) English language. The other files help us reduce the amount of reviews to a managable size because they contain additional information such as in which state a review was made. This allowed grouping reviews by states of the USA. Furthermore, each review is rated how 'funny', 'cool' and 'helpful' it is by the Yelp user base. The smallest funnyness value, i.e. the funny vote, of all reviews as a whole is 0 while the biggest value is 1290. For instance, a given review might be rated 'funny' three times, 'cool' zero times and 'helpful' five times. But it could also have zero ratings for all three categories. 
 
 This raises the problem of how much of our data has the correct label which is needed for supervised learning. Our first suggestion is that reviews that were not rated at all are not labeled. Thus, reviews must at least have one vote in at least one of the three categories to be accepted as labeled data. An alternative would be considering all of our data as labeled, risking that reviews that have not been read at all are given a false label.
 
@@ -34,6 +34,13 @@ Stop words are removed by deleting the 50 most frequent words except from conten
 The dataset is already pre-classified by the Yelp user database, so individuals had the chance to vote for a review to be funny. 7.763 out of the extracted 42.316 Illinois-based reviews were rated funny at least once, which leaves 34.553 reviews up for classification.
 
 Moreover, it is undoubtedly clear that the reviews' votings are subjective. Thus the ratings lack any formal or tracable criteria according to which they were rated funny.
+
+Looking at the distribution of funny votes in Illinois (see figure 1), it becomes clear that funny votes are extemely unbalanced. The majority of reviews has 0 funny votes followed by 1 funny votes. Reviews with 5 or more funny votes are quite sparse. 
+
+![diagram 1](images/Illinois.png)
+
+For other states the distribution of reviews looks similar.
+Thus we decided to use all of our data to create a balanced sample, i.e. a sample that contains bins (or funniness category) with equal amounts of reviews.
 
 # Methodology
 
@@ -51,24 +58,30 @@ In order to improve the result that is given by the baseline classifier model, w
 
 ## Preliminary matters
 
-As mentioned in the introduction, it is questionable how much of our data bears the correct label. Therefore we suggest a condition that sorts out reviews that are likely to not have been read and therefore do not have correct labels, i.e. votes reflecting the users' impression of how amusing a review is. If a review is rated at least funny one time it can be used for training the classifier model. If a review is not rated funny, it must at least be rated as cool or useful to be accepted as training data. Training the classifier will be done with and without this condition.
+As mentioned in the introduction, it is questionable how much of our data bears the correct label. Therefore we suggest a condition that sorts out reviews that are likely to not have been read and therefore do not have correct labels, i.e. votes reflecting the users' impression of how amusing a review is. If a review is rated at least funny one time it can be used for training the classifier model. If a review is not rated funny, it must at least be rated as cool or useful to be accepted as training data. Training the classifier will be done with and without this condition (see diagram 1)
 
 ![diagram 1](projectseminar.png){width=100%}
 
 ## Categories
 
-We will utilize multiple mutually exclusive classification alongside supervised learning. The classes in our data are basically the number of funny votes. We propose reducing this high number to six classes each reflecting different funniess categories.
+We will utilize different classifiers with multiple mutually exclusive classes. The learning method is supervised learning. The classes in our data are basically the number of funny votes. We propose reducing this high number to a managable number of classes or bins each reflecting different funniess categories.
+In order to determine borders to create the afore mentioned categories, we did the following: [TODO: yeah what will we do exactly?]
 
 
 ## Baseline
 
 Now we use Naive Bayes as our baseline classifier, which is a probabilistic classifier based on Bayes' rule that makes two simplifying assumptions. Firstly, the position and distribution of words do not matter, which is known as bag-of-words method [@jurafski_martin_3rd, chapter 4 page 4]. Secondly, the probabilities for each feature of a given text are independent and thus simply multiplied (ibid.). A feature of given text is a word.
 
+
 We represent each text as a sparse text vector. It is counted how many times each word type of the overall vocabulary occurs in a given text. Word types that do not occur in a given text are represented by zeros. Here, a given text is a set of features $f_{1}$, $f_{2}$, ... ,$f_{n}$ element of F. The classifier then predicts a class c for a review by calculating the probability for each class and choosing the one with the highest probability.  
 
 $$c_{NB} = \underset{c\in C}{\operatorname{argmax} } P(c) \prod_{f\in F} P(f|c)$$
 
+## Softmax logistic regression
 
+asdadasdasd
+
+## Random Forests
 
 # Conclusion
 In a nutshell, we're done.
