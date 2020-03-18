@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-import argparse, os, dir, re, sys
+import argparse, os, re, sys
 
 
 # TensorFlow and tf.keras
@@ -12,12 +12,13 @@ from tensorflow import keras
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 # application specifc
 from create_small_test_sample import create_test_sample
 from histogram import create_histograms
 from confusion_matrices import create_confusion_matrices
-from classifiers import train_and_predict_softmax_logistic_regression
+from doc2vec import train_doc2vec
 
 
 
@@ -61,3 +62,54 @@ unlabeled = df.query('funny==0 and cool==0 and useful==0')
 print(df.shape)
 print(labeled.shape)
 print(unlabeled.shape)
+
+
+
+#### train classifier and stuff ####
+
+dnn_classifier = keras.Sequential([
+    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dense(6)
+])
+
+dnn_classifier.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+
+ # get feature representation via doc2vec
+model, df = train_doc2vec(df)
+    
+features = df["docvec"].tolist()
+labels = df['funniness_category'].values
+
+features_train, features_test, labels_train, labels_test = train_test_split(features, labels, test_size=0.20, random_state=20)
+    
+features_train = tf.convert_to_tensor(
+    features_train, dtype=None, dtype_hint=None, name=None
+)
+
+labels_train = tf.convert_to_tensor(
+    labels_train, dtype=None, dtype_hint=None, name=None
+)
+
+features_test = tf.convert_to_tensor(
+    features_test, dtype=None, dtype_hint=None, name=None
+)
+
+
+labels_test = tf.convert_to_tensor(
+    labels_test, dtype=None, dtype_hint=None, name=None
+)
+
+# 80% Trainingsdaten 
+print("features train:\n" ,features_train)#.reshape(-1,1))
+print("labels train:\n" ,labels_train)
+
+
+dnn_classifier.fit(features_train, labels_train, epochs=10)
+
+
+test_loss, test_acc = dnn_classifier.evaluate(features_test,  labels_test, verbose=2)
+
+print('\nTest accuracy:', test_acc)
