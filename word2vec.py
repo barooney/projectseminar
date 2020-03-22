@@ -15,6 +15,10 @@ def train_word2vec(df):
     train word vectors with the Word2Vec package from gensim library: df must a pandas DataFrame
     returns model with the learned word vectors and a datafram which now has a new column with a mean word vector for each text
     '''
+    # Create and register a new `tqdm` instance with `pandas`
+    # (can use tqdm_gui, optional kwargs, etc.)
+    tqdm.pandas()
+
     try:
         # Modell laden?
         model = gensim.models.Word2Vec.load('./data/models/word2vec_model.bin')
@@ -24,9 +28,7 @@ def train_word2vec(df):
         df_all_reviews = pd.read_json('./data/intermediate/zipf_all_reviews.json', lines=True)
         
         nlp = spacy.load("en_core_web_sm")
-        # Create and register a new `tqdm` instance with `pandas`
-        # (can use tqdm_gui, optional kwargs, etc.)
-        tqdm.pandas()
+        
         #print("\nUsing spacy's sophisticated tokenizer (compared to nltk). Unfortunately spacy performs a linguistic roundhouse kick, "
         #  "meaning it also performs POS Tagging, dependency analysis and so on.")
         
@@ -39,7 +41,7 @@ def train_word2vec(df):
         
         # Das Modell trainieren
         
-        model = gensim.models.Word2Vec(list_of_lists, min_count=1,size=300,workers=3)
+        model = gensim.models.Word2Vec(list_of_lists, min_count=1,size=300,workers=24)
         
         # Modell braucht tokenisierte Sätze/ eine Liste von Listen
         # min_count = minimale Anzahl: Nur Wörter mit einer größeren Frequenz als dem angegebenen Wert werden berücksichtigt
@@ -73,7 +75,7 @@ def train_word2vec(df):
         #print(model.wv.most_similar(positive=w1))
         
         # get the mean vector of all word vectors per text
-    df["vectorized_texts"] = df["texts"].progress_apply(lambda tokens: np.array(np.mean([model[token] for token in nltk.word_tokenize(tokens)])))
+    df["vectorized_texts"] = df["text"].progress_apply(lambda tokens: np.array(np.mean([model[token] for token in nltk.word_tokenize(tokens)])))
 
     # alternative is using tf-idf
     
