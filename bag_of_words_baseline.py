@@ -12,7 +12,7 @@ import pandas as pd
 from scipy.stats import kurtosis
 from sklearn.model_selection import train_test_split, cross_val_predict
 from sklearn.naive_bayes import GaussianNB
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.preprocessing import StandardScaler
@@ -106,16 +106,20 @@ def train_model_baseline(df, name):
     #################################### get bag of words with a counting vector ####
     
     vectorizer = CountVectorizer(binary=False, stop_words='english')
-    vectorizer.fit(texts)
-    
-    #print(vectorizer.vocabulary_.keys())  
-    #print(vectorizer.get_feature_names())
-    
-    vectorizer.transform(texts)
       
-    features = np.array(pd.DataFrame(vectorizer.transform(texts).toarray(), columns=sorted(vectorizer.vocabulary_.keys())))
+    
+    features = vectorizer.fit_transform(texts)
       
     #df[df['text'].str.contains('黄鳝')]
+    
+    
+    ##################################
+    ### tf idf vectorizer ###### 
+    
+    # tfidf_vectorizer = TfidfVectorizer()
+    # features = tfidf_vectorizer.fit_transform(texts)
+    
+    ##################
     
     
     ################ train classifier and predict with cross validation on training set #############

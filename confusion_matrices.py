@@ -33,14 +33,18 @@ def create_confusion_matrices(labels_train, y_train_pred, feature_representation
         
         cond = "(no condition)" if condition == False else "(labeled)"
         matrix_name = "Confusion matrix " if errors == False else "Confusion matrix errors only "
-        title_name = matrix_name + feature_representation + " " + classifier_type + " " + cond
+        title_for_filename = matrix_name + feature_representation + " " + classifier_type + " " + cond
+        if classifier_type =="Naive Bayes":
+            title_name = matrix_name + "Baseline "  + cond
+        else:
+            title_name = matrix_name + " " + cond
         ax.set_title(title_name)
     
         print("Confusion Matrix for cross validation on training set.\nTest set remained untouched.")
         print(conf_mx)
     
-        plt.savefig('./doc/images/' + title_name.lower().replace(" ", "_") + '.pdf', format='pdf')
-        plt.savefig('./doc/images/' + title_name.lower().replace(" ", "_") + '.png', format='png')
+        plt.savefig('./doc/images/' + title_for_filename.lower().replace(" ", "_") + '.pdf', format='pdf')
+        plt.savefig('./doc/images/' + title_for_filename.lower().replace(" ", "_") + '.png', format='png')
     
     
     
