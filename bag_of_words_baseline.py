@@ -91,11 +91,10 @@ print(unlabeled.shape)
 def train_model_baseline(df, name):
     '''use bag of words as feature representation and naive Bayes as classifier'''
 
-      
-    df_shuffled = df.sample(frac=1)
+     
         
     #labels = df_shuffled['funny'].values 
-    labels = np.array(df_shuffled['funniness_category'].values)
+    labels = np.array(df['funniness_category'].values)
     texts = df_shuffled['text'].values 
     
     # create histograms
@@ -105,8 +104,8 @@ def train_model_baseline(df, name):
     
     #################################### get bag of words with a counting vector ####
     
-    vectorizer = CountVectorizer(binary=False, stop_words='english')
-      
+    #vectorizer = CountVectorizer(binary=False, stop_words='english')
+    vectorizer = CountVectorizer(binary=False)  
     
     features = vectorizer.fit_transform(texts)
       

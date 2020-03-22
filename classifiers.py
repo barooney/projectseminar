@@ -26,29 +26,27 @@ def train_and_predict_multinomial_naive_bayes(features, labels):
     # GaussianNB did not produce a result, hence MultinomialNB was used
     gnb = MultinomialNB()
     
-    # # train classifier with training set: 
-    gnb.fit(features_train, labels_train)
+    # perform cross validation on the trainig set
+    y_train_predict = cross_val_predict(gnb, features_train, labels_train, cv=5)
     
-    # # use classifier on test set: 
-    labels_pred = gnb.predict(features_test)
-    print("Result for test set:")
-    print(labels_pred)
-    
-    # # How well is the classifier performing? 
-    print("\nAccuracy:")
-    print(accuracy_score(labels_test, labels_pred))
-    #print(gnb.score(features_test, labels_test))
+    #new_f1_scorer = make_scorer(f1_score, average = 'weighted')
     
     # report
     print("\nReport:")
-    print(classification_report(labels_test, labels_pred))
-
-    # scaler = StandardScaler()
-    # X_train_scaled = scaler.fit_transform()
-
-    y_train_pred = cross_val_predict(gnb, features_train, labels_train, cv=3)
+    print(classification_report(labels_train, y_train_predict))
+      
+    print("\nScores come here:----------\n")
+    print("accuracy:")
+    print(accuracy_score(labels_train, y_train_predict))
+    print("precision:")
+    print(precision_score(labels_train, y_train_predict, average="weighted"))  
+    print("recall:")    
+    print(recall_score(labels_train, y_train_predict, average="weighted"))   
+    print("f1 score:")    
+    print(f1_score(labels_train, y_train_predict, average="weighted"))  
     
-    return labels_train, y_train_pred
+    return labels_train, y_train_predict
+
 
 
 def train_and_predict_softmax_logistic_regression(features, labels):
@@ -66,7 +64,7 @@ def train_and_predict_softmax_logistic_regression(features, labels):
     #softmax_reg.fit(features_train, labels_train)
     
     # perform cross validation on the trainig set
-    y_train_predict = cross_val_predict(softmax_reg, features_train, labels_train, cv=3)
+    y_train_predict = cross_val_predict(softmax_reg, features_train, labels_train, cv=5)
     
     #new_f1_scorer = make_scorer(f1_score, average = 'weighted')
     
@@ -96,7 +94,7 @@ def train_and_predict_random_forests(features, labels):
     rnd_clf = RandomForestClassifier(n_estimators=500, max_leaf_nodes=16, n_jobs=-1)
    
     # perform cross validation on the trainig set
-    y_train_predict = cross_val_predict(rnd_clf, features_train, labels_train, cv=3)
+    y_train_predict = cross_val_predict(rnd_clf, features_train, labels_train, cv=5)
    
     # report
     print("\nReport:")
