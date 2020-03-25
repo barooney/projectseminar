@@ -35,9 +35,9 @@ def create_confusion_matrices(labels_train, y_train_pred, feature_representation
         matrix_name = "Confusion matrix " if errors == False else "Confusion matrix errors only "
         title_for_filename = matrix_name + feature_representation + " " + classifier_type + " " + cond
         if classifier_type =="Naive Bayes":
-            title_name = matrix_name + "Baseline "  + cond
+            title_name = "Baseline "  + cond
         else:
-            title_name = matrix_name + " " + cond
+            title_name = classifier_type + " " + cond
         ax.set_title(title_name)
     
         print("Confusion Matrix for cross validation on training set.\nTest set remained untouched.")
