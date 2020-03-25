@@ -95,7 +95,7 @@ def train_model_baseline(df, name):
         
     #labels = df_shuffled['funny'].values 
     labels = np.array(df['funniness_category'].values)
-    texts = df_shuffled['text'].values 
+    texts = df['text'].values 
     
     # create histograms
     create_histograms(df, input_bins, name)
