@@ -6,7 +6,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, cross_val_predict, cross_val_score, cross_validate
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, precision_score, recall_score, f1_score, make_scorer
 from sklearn.ensemble import RandomForestClassifier
-
+from sklearn.preprocessing import LabelEncoder
 
 
 
@@ -63,6 +63,10 @@ def train_and_predict_softmax_logistic_regression(features, labels):
     softmax_reg = LogisticRegression(multi_class="multinomial", solver="lbfgs", verbose=0, C=10)
     #softmax_reg.fit(features_train, labels_train)
     
+    le = LabelEncoder()
+    labels_test = le.fit_transform(labels_test)
+    labels_train = le.fit_transform(labels_train)
+
     # perform cross validation on the trainig set
     y_train_predict = cross_val_predict(softmax_reg, features_train, labels_train, cv=5)
     
@@ -92,7 +96,7 @@ def train_and_predict_random_forests(features, labels):
     features_train, features_test, labels_train, labels_test = train_test_split(features, labels, test_size=0.20, random_state=666)
     
     rnd_clf = RandomForestClassifier(n_estimators=500, max_leaf_nodes=16, n_jobs=-1)
-   
+
     # perform cross validation on the trainig set
     y_train_predict = cross_val_predict(rnd_clf, features_train, labels_train, cv=5)
    
