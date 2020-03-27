@@ -46,6 +46,9 @@ else:
 # read random sample that is used for training 
 STATE_TO_FILTER = [f for f in os.listdir('./data/intermediate/') if re.match(r'random.+_.+_reviews.json', f)][0]
 
+STATE_TO_FILTER = "random-small-unzipfed-5000_-1.0.2.4.9.34.9999999999_reviews.json"
+print(STATE_TO_FILTER)
+
 df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER , lines=True)
 
 
