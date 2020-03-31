@@ -38,9 +38,14 @@ def train_doc2vec(df):
     print("num docs: " + str(num_docs))
     print("num train docs: " + str(len(train_corpus)))
     print("num test docs: " + str(len(test_corpus)))
-    model = Doc2Vec(vector_size=512, window=2, min_count=1, workers=4)
-    model.build_vocab(train_corpus)
-    model.train(train_corpus, total_examples=model.corpus_count, epochs=model.epochs)
+    model = None
+    try:
+        model = Doc2Vec.load("./data/models/doc2vec_zipf.bin")
+    except:
+        model = Doc2Vec(vector_size=512, window=2, min_count=1, workers=4)
+        model.build_vocab(train_corpus)
+        model.train(train_corpus, total_examples=model.corpus_count, epochs=model.epochs)
+        model.save("./data/models/doc2vec_zipf.bin")
     
     
     # bis hier hin verstanden, rest aus dem Tutorial kopiert:

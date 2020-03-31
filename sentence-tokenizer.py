@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from collections import Counter
 from softmax_logistic_regression import train_modelsoftmax_regression
 
-df_basis = pd.read_json('./data/intermediate/Illinois_reviews.json', lines=True)
+df_basis = pd.read_json('./data/intermediate/random-small-zipfed-5000_-1.0.2.4.9.34.9999999999_reviews.json', lines=True)
 cnt = Counter()
 df = pd.DataFrame()
 for i, j in tqdm(df_basis.iterrows(), total=len(df_basis)):

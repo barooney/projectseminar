@@ -43,16 +43,17 @@ input_bins = args.bins_input
 
 # create a suitable sample in terms of the desired bin sizes if bins are given
 
-if len(sys.argv) > 1:
-    print("a new sample is created using bins: {}".format(input_bins))
-    input_bins = eval(input_bins)
-    create_test_sample(input_bins)
-else:
-    print("a sample file that already exists is going to be used.")
-    assert len([f for f in os.listdir('./data/intermediate/') if re.match(r'random.+_.+_reviews.json', f)]), "Either there is no file having the bin sizes in its name or there are multiple such files."
-    file_name = [f for f in os.listdir('./data/intermediate/') if re.match(r'random.+_.+_reviews.json', f)][0]
-    input_bins = [int(number) for number in file_name.split("_")[1].split(".")]
-    print(input_bins)
+# print(len(sys.argv))
+# if len(sys.argv) > 1:
+#     print("a new sample is created using bins: {}".format(input_bins))
+#     input_bins = eval(input_bins)
+#     create_test_sample(input_bins)
+# else:
+print("a sample file that already exists is going to be used.")
+assert len([f for f in os.listdir('./data/intermediate/') if re.match(r'random.+_.+_reviews.json', f)]), "Either there is no file having the bin sizes in its name or there are multiple such files."
+file_name = [f for f in os.listdir('./data/intermediate/') if re.match(r'random.+_.+_reviews.json', f)][0]
+input_bins = [int(number) for number in file_name.split("_")[1].split(".")]
+print(input_bins)
 
 
 
@@ -62,6 +63,8 @@ else:
 # read random sample that is used for training 
 STATE_TO_FILTER = [f for f in os.listdir('./data/intermediate/') if re.match(r'random.+_.+_reviews.json', f)][0]
 
+STATE_TO_FILTER = "random-small-zipfed-5000_-1.0.2.4.9.34.9999999999_reviews.json"
+print(STATE_TO_FILTER)
 df = pd.read_json('./data/intermediate/' + STATE_TO_FILTER , lines=True)
 
 min_funny = 0

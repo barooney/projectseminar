@@ -25,9 +25,9 @@ def train_word2vec(df):
     except:
          
         ## load all reviews to train word vectors with
-        df_all_reviews = pd.read_json('./data/intermediate/zipf_all_reviews.json', lines=True)
+        df_all_reviews = pd.read_json('./data/intermediate/random-small-unzipfed-5000_-1.0.2.4.9.34.9999999999_reviews.json', lines=True)
         
-        nlp = spacy.load("en_core_web_sm")
+        # nlp = spacy.load("en_core_web_sm")
         
         #print("\nUsing spacy's sophisticated tokenizer (compared to nltk). Unfortunately spacy performs a linguistic roundhouse kick, "
         #  "meaning it also performs POS Tagging, dependency analysis and so on.")

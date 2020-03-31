@@ -11,7 +11,7 @@ def create_test_sample(bins):
    
     
     # read file with all reviews from which stop words were already removed
-    df_basis = pd.read_json('./data/intermediate/zipf_all_reviews.json', lines=True)
+    df_basis = pd.read_json('./data/intermediate/new_random_small_zipf.json', lines=True)
     
     
     # set bins
@@ -42,10 +42,11 @@ def create_test_sample(bins):
     bin_names_as_strings = map(lambda x: str(x), bins)
     bins_as_file_name = ".".join(bin_names_as_strings)
     
-    output_file = open('./data/intermediate/random-small_' + bins_as_file_name + '_reviews.json', 'w')
+    output_file = open('./data/intermediate/random-small_5000_' + bins_as_file_name + '_reviews.json', 'w')
     for bin in bin_separations:
-    	bin_separations[bin] = bin_separations[bin].sample(frac=1).head(2000)
+    	bin_separations[bin] = bin_separations[bin].sample(frac=1).head(5000)
     	for row in bin_separations[bin].iterrows():
     		row[1].to_json(output_file)
     		output_file.write("\n")
 		
+#create_test_sample([-1,0,2,4,9,34,9999999999])

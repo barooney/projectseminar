@@ -98,7 +98,7 @@ def train_and_predict_random_forests(features, labels):
     rnd_clf = RandomForestClassifier(n_estimators=500, max_leaf_nodes=16, n_jobs=-1)
 
     # perform cross validation on the trainig set
-    y_train_predict = cross_val_predict(rnd_clf, features_train, labels_train, cv=5)
+    y_train_predict = cross_val_predict(rnd_clf, features_train, labels_train, cv=10)
    
     # report
     print("\nReport:")
